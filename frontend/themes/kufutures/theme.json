@@ -1,0 +1,9 @@
+{
+  "lumoImports" : [ "typography", "color", "spacing", "badge", "utility" ],
+  "assets" : {
+    "@fontsource/titillium-web" : {
+      "*.css" : "@fontsource/titillium-web",
+      "files/*" : "@fontsource/titillium-web/files"
+    }
+  }
+}
