@@ -1,4 +1,4 @@
 @NonNullApi
-package online.sterz.app.data;
+package online.sterz.app.model;
 
 import org.springframework.lang.NonNullApi;

@@ -26,7 +26,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import java.util.Optional;
-import online.sterz.app.data.SamplePerson;
+import online.sterz.app.model.SamplePerson;
 import online.sterz.app.services.SamplePersonService;
 import online.sterz.app.views.MainLayout;
 import org.springframework.data.domain.PageRequest;

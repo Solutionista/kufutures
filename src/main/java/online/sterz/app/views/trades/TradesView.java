@@ -1,5 +1,10 @@
 package online.sterz.app.views.trades;
 
+import com.kucoin.futures.core.KucoinFuturesClientBuilder;
+import com.kucoin.futures.core.KucoinFuturesPublicWSClient;
+import com.kucoin.futures.core.websocket.event.KucoinEvent;
+import com.nimbusds.jose.shaded.gson.Gson;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
@@ -9,30 +14,65 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+
+import online.sterz.app.model.TickerResponse;
 import online.sterz.app.views.MainLayout;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.batch.BatchDataSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 @PageTitle("Trades")
 @Route(value = "trades", layout = MainLayout.class)
 public class TradesView extends Div implements AfterNavigationObserver {
-
+    TextField responseField = new TextField("" );
     Grid<Person> grid = new Grid<>();
 
     public TradesView() {
+        Gson gson = new Gson();
+        KucoinFuturesClientBuilder builder = new KucoinFuturesClientBuilder()
+                .withBaseUrl("https://api-futures.kucoin.com");
+//                .withApiKey(api, secret, pass, "v2");
+        KucoinFuturesPublicWSClient kucoinFuturesPublicWSClient = null;
+        try {
+            kucoinFuturesPublicWSClient = builder.buildPublicWSClient();
+            kucoinFuturesPublicWSClient.connect();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         addClassName("trades-view");
         setSizeFull();
         grid.setHeight("100%");
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS);
         grid.addComponentColumn(person -> createCard(person));
+        
         add(grid);
+        UI ui = UI.getCurrent().getUI().get();
+        kucoinFuturesPublicWSClient.onTickerV2(response -> {
+            ui.access(() -> {
+                BigDecimal bestBid = response.getData().getBestBidPrice();
+
+                responseField.setValue(String.valueOf(bestBid));
+                System.out.println(response);
+            });
+            System.out.println(response);
+        }, "XBTUSDM");
     }
 
     private HorizontalLayout createCard(Person person) {
+
         HorizontalLayout card = new HorizontalLayout();
         card.addClassName("card");
         card.setSpacing(false);
@@ -77,7 +117,7 @@ public class TradesView extends Div implements AfterNavigationObserver {
         Span shares = new Span(person.getShares());
         shares.addClassName("shares");
 
-        actions.add(likeIcon, likes, commentIcon, comments, shareIcon, shares);
+        actions.add(likeIcon, likes, commentIcon, comments, shareIcon, shares, responseField);
 
         description.add(header, post, actions);
         card.add(image, description);
@@ -91,50 +131,7 @@ public class TradesView extends Div implements AfterNavigationObserver {
         List<Person> persons = Arrays.asList( //
                 createPerson("https://randomuser.me/api/portraits/men/42.jpg", "John Smith", "May 8",
                         "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document without relying on meaningful content (also called greeking).",
-                        "1K", "500", "20"),
-                createPerson("https://randomuser.me/api/portraits/women/42.jpg", "Abagail Libbie", "May 3",
-                        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document without relying on meaningful content (also called greeking).",
-                        "1K", "500", "20"),
-                createPerson("https://randomuser.me/api/portraits/men/24.jpg", "Alberto Raya", "May 3",
-
-                        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document without relying on meaningful content (also called greeking).",
-                        "1K", "500", "20"),
-                createPerson("https://randomuser.me/api/portraits/women/24.jpg", "Emmy Elsner", "Apr 22",
-
-                        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document without relying on meaningful content (also called greeking).",
-                        "1K", "500", "20"),
-                createPerson("https://randomuser.me/api/portraits/men/76.jpg", "Alf Huncoot", "Apr 21",
-
-                        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document without relying on meaningful content (also called greeking).",
-                        "1K", "500", "20"),
-                createPerson("https://randomuser.me/api/portraits/women/76.jpg", "Lidmila Vilensky", "Apr 17",
-
-                        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document without relying on meaningful content (also called greeking).",
-                        "1K", "500", "20"),
-                createPerson("https://randomuser.me/api/portraits/men/94.jpg", "Jarrett Cawsey", "Apr 17",
-                        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document without relying on meaningful content (also called greeking).",
-                        "1K", "500", "20"),
-                createPerson("https://randomuser.me/api/portraits/women/94.jpg", "Tania Perfilyeva", "Mar 8",
-
-                        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document without relying on meaningful content (also called greeking).",
-                        "1K", "500", "20"),
-                createPerson("https://randomuser.me/api/portraits/men/16.jpg", "Ivan Polo", "Mar 5",
-
-                        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document without relying on meaningful content (also called greeking).",
-                        "1K", "500", "20"),
-                createPerson("https://randomuser.me/api/portraits/women/16.jpg", "Emelda Scandroot", "Mar 5",
-
-                        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document without relying on meaningful content (also called greeking).",
-                        "1K", "500", "20"),
-                createPerson("https://randomuser.me/api/portraits/men/67.jpg", "Marcos Sá", "Mar 4",
-
-                        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document without relying on meaningful content (also called greeking).",
-                        "1K", "500", "20"),
-                createPerson("https://randomuser.me/api/portraits/women/67.jpg", "Jacqueline Asong", "Mar 2",
-
-                        "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document without relying on meaningful content (also called greeking).",
                         "1K", "500", "20")
-
         );
 
         grid.setItems(persons);

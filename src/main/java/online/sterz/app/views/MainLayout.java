@@ -46,6 +46,8 @@ public class MainLayout extends AppLayout {
         public MenuItemInfo(String menuTitle, Component icon, Class<? extends Component> view) {
             this.view = view;
             RouterLink link = new RouterLink();
+            //<theme-editor-local-classname>
+            link.addClassName("main-layout-a-1");
             // Use Lumo classnames for various styling
             link.addClassNames(Display.FLEX, Gap.XSMALL, Height.MEDIUM, AlignItems.CENTER, Padding.Horizontal.SMALL,
                     TextColor.BODY);

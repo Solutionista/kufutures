@@ -1,4 +1,4 @@
-package online.sterz.app.data;
+package online.sterz.app.model;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package online.sterz.app.data;
+package online.sterz.app.model;
 
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Email;

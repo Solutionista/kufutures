@@ -2,9 +2,10 @@ package online.sterz.app;
 
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.page.AppShellConfigurator;
+import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.theme.Theme;
 import javax.sql.DataSource;
-import online.sterz.app.data.SamplePersonRepository;
+import online.sterz.app.model.SamplePersonRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.sql.init.SqlDataSourceScriptDatabaseInitializer;
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Bean;
  * and some desktop browsers.
  *
  */
+@Push
 @SpringBootApplication
 @NpmPackage(value = "@fontsource/titillium-web", version = "4.5.0")
 @Theme(value = "kufutures")

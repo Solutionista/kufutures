@@ -1,8 +1,8 @@
 package online.sterz.app.services;
 
 import java.util.Optional;
-import online.sterz.app.data.SamplePerson;
-import online.sterz.app.data.SamplePersonRepository;
+import online.sterz.app.model.SamplePerson;
+import online.sterz.app.model.SamplePersonRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
